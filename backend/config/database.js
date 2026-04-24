@@ -1,0 +1,165 @@
+// In-memory database (sẽ mất khi restart server)
+// Trong production, thay thế bằng MongoDB, MySQL, PostgreSQL, etc.
+
+let products = [
+  {
+    id: 1,
+    name: 'Áo Thun Cổ Tròn Có In Hình',
+    price: 150000,
+    originalPrice: 200000,
+    image: 'https://via.placeholder.com/400x400?text=Ao+Thun+Co+Tron',
+    category: 'Áo',
+    description: 'Áo thun cổ tròn chất liệu cotton mềm mại, thoáng mát, an toàn cho da bé. Có nhiều màu sắc và họa tiết dễ thương.',
+    sizes: ['S', 'M', 'L', 'XL'],
+    sale: 25,
+    stock: 50,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    name: 'Quần Short Thể Thao',
+    price: 120000,
+    originalPrice: 150000,
+    image: 'https://via.placeholder.com/400x400?text=Quan+Short+The+Thao',
+    category: 'Quần',
+    description: 'Quần short thể thao co giãn tốt, phù hợp cho các hoạt động vui chơi của bé.',
+    sizes: ['S', 'M', 'L'],
+    sale: 20,
+    stock: 30,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    name: 'Đầm Công Chúa Xinh Xắn',
+    price: 250000,
+    originalPrice: 300000,
+    image: 'https://via.placeholder.com/400x400?text=Dam+Cong+Chua',
+    category: 'Đầm',
+    description: 'Đầm công chúa với chất liệu voan mềm mại, thiết kế xinh xắn phù hợp cho các dịp đặc biệt.',
+    sizes: ['S', 'M', 'L'],
+    sale: 17,
+    stock: 25,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 4,
+    name: 'Áo Khoác Mùa Đông Ấm Áp',
+    price: 350000,
+    originalPrice: 400000,
+    image: 'https://via.placeholder.com/400x400?text=Ao+Khoac+Mua+Dong',
+    category: 'Áo',
+    description: 'Áo khoác mùa đông với lớp lót bông ấm áp, giữ ấm tốt cho bé trong thời tiết lạnh.',
+    sizes: ['M', 'L', 'XL'],
+    sale: 12,
+    stock: 40,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 5,
+    name: 'Quần Jeans Co Giãn',
+    price: 180000,
+    image: 'https://via.placeholder.com/400x400?text=Quan+Jeans',
+    category: 'Quần',
+    description: 'Quần jeans với chất liệu co giãn, thoải mái cho bé vận động.',
+    sizes: ['S', 'M', 'L', 'XL'],
+    stock: 35,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 6,
+    name: 'Áo Sơ Mi Cổ Bẻ',
+    price: 200000,
+    originalPrice: 250000,
+    image: 'https://via.placeholder.com/400x400?text=Ao+So+Mi+Co+Be',
+    category: 'Áo',
+    description: 'Áo sơ mi cổ bẻ thanh lịch, phù hợp cho các dịp trang trọng.',
+    sizes: ['S', 'M', 'L'],
+    sale: 20,
+    stock: 45,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 7,
+    name: 'Mũ Lưỡi Trai Thể Thao',
+    price: 80000,
+    image: 'https://via.placeholder.com/400x400?text=Mu+Lui+Trai',
+    category: 'Phụ kiện',
+    description: 'Mũ lưỡi trai bảo vệ bé khỏi ánh nắng mặt trời.',
+    sizes: ['One Size'],
+    stock: 60,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 8,
+    name: 'Đầm Hoa Mùa Hè',
+    price: 220000,
+    originalPrice: 280000,
+    image: 'https://via.placeholder.com/400x400?text=Dam+Hoa+Mua+He',
+    category: 'Đầm',
+    description: 'Đầm hoa mùa hè mát mẻ, dễ thương với họa tiết hoa nhỏ xinh.',
+    sizes: ['S', 'M', 'L'],
+    sale: 21,
+    stock: 28,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 9,
+    name: 'Áo Polo Cổ Bẻ',
+    price: 170000,
+    image: 'https://via.placeholder.com/400x400?text=Ao+Polo',
+    category: 'Áo',
+    description: 'Áo polo cổ bẻ lịch sự, phù hợp cho nhiều dịp khác nhau.',
+    sizes: ['S', 'M', 'L', 'XL'],
+    stock: 55,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 10,
+    name: 'Quần Legging Thể Thao',
+    price: 130000,
+    image: 'https://via.placeholder.com/400x400?text=Quan+Legging',
+    category: 'Quần',
+    description: 'Quần legging co giãn tốt, thoải mái cho các hoạt động thể thao.',
+    sizes: ['S', 'M', 'L'],
+    stock: 42,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 11,
+    name: 'Túi Xách Đi Học',
+    price: 150000,
+    image: 'https://via.placeholder.com/400x400?text=Tui+Xach',
+    category: 'Phụ kiện',
+    description: 'Túi xách đi học với thiết kế ngộ nghĩnh, nhiều ngăn tiện lợi.',
+    sizes: ['One Size'],
+    stock: 38,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 12,
+    name: 'Đầm Dự Tiệc Sang Trọng',
+    price: 400000,
+    originalPrice: 500000,
+    image: 'https://via.placeholder.com/400x400?text=Dam+Du+Tiec',
+    category: 'Đầm',
+    description: 'Đầm dự tiệc sang trọng với chất liệu cao cấp, thiết kế tinh tế.',
+    sizes: ['S', 'M', 'L'],
+    sale: 20,
+    stock: 20,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+]
+
+export default products
