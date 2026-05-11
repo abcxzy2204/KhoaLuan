@@ -285,7 +285,8 @@ export const getAIChatResponse = async (prompt, history = [], products = []) => 
         const systemPrompt =
             `Bạn là trợ lý bán hàng của "Shop Quần Áo Trẻ Em" tại Việt Nam.\n` +
             `NHIỆM VỤ: Trả lời câu hỏi của khách hàng về quần áo cho bé, tư vấn chọn size, cách phối đồ, chính sách bán hàng (nếu có).\n` +
-            `YÊU CẦU: Trả lời bằng TIẾNG VIỆT, lịch sự, ngắn gọn (2-6 câu). Tránh lời chào mở đầu lặp lại (ví dụ "Chào ba mẹ").\n` +
+            `YÊU CẦU: Trả lời bằng TIẾNG VIỆT, lịch sự, rõ ràng, mạch lạc, ngắn gọn (2-6 câu). Không mở đầu bằng lời chào kiểu "chào bố mẹ", "chào ba mẹ" hay lời chào tương tự.\n` +
+            `Ưu tiên câu văn tự nhiên, đúng chính tả, không xuống dòng giữa chừng, không viết cụt chữ, không chèn ký tự thừa.\n` +
             `Nếu khách chỉ chào hỏi xã giao (ví dụ "xin chào", "hello") và CHƯA nêu nhu cầu mua hàng, KHÔNG gợi ý sản phẩm, KHÔNG chèn link/ảnh. Chỉ hỏi 1 câu ngắn để làm rõ nhu cầu.\n` +
             `KHÔNG được lặp lại y hệt câu trả lời trước đó. Nếu câu hỏi mới có thêm điều kiện (độ tuổi/size/màu), bắt buộc cập nhật tư vấn theo điều kiện mới.\n` +
             `Nếu khách nêu tuổi (ví dụ 5 tuổi), ưu tiên sản phẩm có size phù hợp trong danh sách và nói rõ size gợi ý.\n` +
@@ -313,6 +314,14 @@ export const getAIChatResponse = async (prompt, history = [], products = []) => 
 
         const rawText = await generateContentWithFallbacks(fullPrompt, generationConfig, 'chat');
         let text = String(rawText || '').trim();
+
+        // Dọn lỗi xuống dòng / gạch đầu dòng sai định dạng
+        text = text
+            .replace(/\r/g, '')
+            .replace(/^\s*[-*•]\s*$/gm, '')
+            .replace(/^\s*(\d+)\s*([\.)])\s*(?=\S)/gm, '$1. ')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
 
         // Hậu xử lý: chỉ ép Link/Ảnh khi TIN NHẮN HIỆN TẠI có ý định mua/tìm sản phẩm rõ ràng
         const currentPrompt = String(safePrompt || '').trim().toLowerCase();
@@ -442,6 +451,7 @@ ${extra ? `\nBỔ SUNG:\n${extra}\n` : ''}
 YÊU CẦU NỘI DUNG:
 - ${toneHints[tone] || toneHints.warm}
 - Độ dài: ${lengthHints[length] || lengthHints.medium}
+- KHÔNG mở đầu bằng lời chào kiểu "chào bố mẹ", "chào ba mẹ" hay lời chào tương tự.
 - Luôn viết ĐẦY ĐỦ câu, KHÔNG cắt giữa câu. Trả về phần cuối câu hoàn chỉnh (không dừng sau một emoji hoặc dấu cách).
 - KHÔNG dùng markdown/định dạng kiểu **...** / *...* / #... (chỉ dùng chữ thường/bình thường).
 - Nhấn mạnh: thoáng mát/thấm hút (nếu phù hợp), an toàn cho da trẻ em, form dễ mặc, dễ phối đồ — chỉ mô tả hợp lý, không tuyên bố y tế hoặc cam kết vượt quá thực tế.

@@ -1,4 +1,5 @@
-import { Link, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 
@@ -6,6 +7,8 @@ const Header = () => {
   const { getTotalItems } = useCart()
   const { user, logout, isAuthenticated } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState('')
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/'
@@ -18,6 +21,17 @@ const Header = () => {
         ? 'bg-primary-600 text-white shadow-sm'
         : 'text-gray-600 hover:text-primary-700 hover:bg-primary-50'
     }`
+
+  const handleSearch = () => {
+    const query = searchTerm.trim()
+    navigate(`/products${query ? `?q=${encodeURIComponent(query)}` : ''}`)
+  }
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch()
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/90 backdrop-blur-md">
@@ -34,9 +48,12 @@ const Header = () => {
             <input
               type="text"
               placeholder="Tìm sản phẩm cho bé..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
               className="w-full px-4 py-2.5 rounded-l-xl border border-gray-200 border-r-0 focus:outline-none focus:ring-2 focus:ring-primary-400"
             />
-            <button className="px-5 rounded-r-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition">
+            <button onClick={handleSearch} className="px-5 rounded-r-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition">
               Tìm
             </button>
           </div>
@@ -86,15 +103,21 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="md:hidden mt-3">
+        <div className="md:hidden mt-3 flex gap-2">
           <input
             type="text"
             placeholder="Tìm sản phẩm cho bé..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-400"
           />
+          <button onClick={handleSearch} className="px-4 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition">
+            Tìm
+          </button>
         </div>
 
-        <nav className="mt-3 flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <nav className="mt-3 flex flex-nowrap md:flex-wrap justify-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <Link to="/" className={`${navItemClass('/')} whitespace-nowrap shrink-0`}>Trang chủ</Link>
           <Link to="/products" className={`${navItemClass('/products')} whitespace-nowrap shrink-0`}>Sản phẩm</Link>
           <Link to="/about" className={`${navItemClass('/about')} whitespace-nowrap shrink-0`}>Giới thiệu</Link>

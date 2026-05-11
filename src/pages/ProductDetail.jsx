@@ -187,28 +187,30 @@ const ProductDetail = () => {
 
       <div className="mb-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-          <div className="lg:col-span-7">
-            <div className="rounded-2xl overflow-hidden bg-black border border-gray-200">
-              <img
-                src={selectedImage || product.image}
-                alt={product.name}
-                className="w-full aspect-[4/5] object-cover"
-              />
-            </div>
+          <div className="lg:col-span-7 flex justify-center">
+            <div className="w-full max-w-[420px]">
+              <div className="rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm">
+                <img
+                  src={selectedImage || product.image}
+                  alt={product.name}
+                  className="w-full aspect-[4/5] object-contain p-4 bg-white"
+                />
+              </div>
 
-            <div className="grid grid-cols-3 gap-3 mt-3">
-              {[
-                selectedImage || product.image,
-                ...(product.galleryImages || []),
-              ].filter(Boolean).slice(0, 3).map((img, idx) => (
-                <button
-                  key={`${img}-${idx}`}
-                  onClick={() => setSelectedImage(img)}
-                  className={`rounded-xl overflow-hidden border transition ${selectedImage === img ? 'border-primary-600 ring-2 ring-primary-100' : 'border-gray-200 hover:border-gray-300'}`}
-                >
-                  <img src={img} alt={`${product.name}-${idx}`} className="w-full aspect-square object-cover" />
-                </button>
-              ))}
+              <div className="grid grid-cols-3 gap-3 mt-3">
+                {[
+                  selectedImage || product.image,
+                  ...(product.galleryImages || []),
+                ].filter(Boolean).slice(0, 3).map((img, idx) => (
+                  <button
+                    key={`${img}-${idx}`}
+                    onClick={() => setSelectedImage(img)}
+                    className={`rounded-xl overflow-hidden border transition ${selectedImage === img ? 'border-primary-600 ring-2 ring-primary-100' : 'border-gray-200 hover:border-gray-300'}`}
+                  >
+                    <img src={img} alt={`${product.name}-${idx}`} className="w-full aspect-square object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

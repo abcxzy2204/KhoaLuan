@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import { fetchProducts as fetchProductsApi } from '../api/client'
 
@@ -10,8 +11,11 @@ const Products = () => {
   const [selectedSize, setSelectedSize] = useState('all')
   const [selectedPriceRange, setSelectedPriceRange] = useState('all')
   const [showFiltersMobile, setShowFiltersMobile] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
+    const initialQuery = searchParams.get('q') || ''
+    setSearchTerm(initialQuery)
     loadProducts()
 
     const handleFocus = () => {
@@ -21,6 +25,13 @@ const Products = () => {
     window.addEventListener('focus', handleFocus)
     return () => window.removeEventListener('focus', handleFocus)
   }, [])
+
+  useEffect(() => {
+    const query = searchParams.get('q') || ''
+    if (query !== searchTerm) {
+      setSearchTerm(query)
+    }
+  }, [searchParams])
 
   const loadProducts = async () => {
     setLoading(true)
@@ -44,9 +55,11 @@ const Products = () => {
     const matchesCategory =
       selectedCategory === 'all' || product.category === selectedCategory
 
+    const normalizedSearch = searchTerm.toLowerCase().trim()
     const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase())
+      normalizedSearch === '' ||
+      product.name.toLowerCase().includes(normalizedSearch) ||
+      product.category.toLowerCase().includes(normalizedSearch)
 
     const productSizes = Array.isArray(product?.sizes)
       ? product.sizes.map((s) => (typeof s === 'string' ? s : s?.size)).filter(Boolean)
@@ -94,7 +107,11 @@ const Products = () => {
                 type="text"
                 placeholder="Tên sản phẩm..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value
+                  setSearchTerm(value)
+                  setSearchParams(value.trim() ? { q: value.trim() } : {})
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
